@@ -4,44 +4,39 @@ uint part2(char i, char j)
 {
     uint base = 3 * (j - 'X');
 
-    char x;
+    i = i - 'A';
+
+    char add = 0;
 
     if (j == 'X')
     {
-        x = i == 'A' ? 'C' : i - 1;
+        add = 2;
     }
-    else if (j == 'Y')
+    else if (j == 'Z')
     {
-        x = i;
-    }
-    else
-    {
-        x = i == 'C' ? 'A' : i + 1;
+        add = 1;
     }
 
-    return base + (x - 'A' + 1);
+    return base + 1 + ((i + add) % 3);
 }
 
 uint part1(char i, char j)
 {
-    j = j - ('X' - 'A');
-
-    uint base = j - 'A' + 1;
+    j = j - 'X';
+    i = i - 'A';
 
     /* tie */
     if (j == i)
     {
-        return base + 3;
+        return j + 4;
     }
 
-    if ((i == 'A' && j == 'B') ||
-        (i == 'B' && j == 'C') ||
-        (i == 'C' && j == 'A'))
+    if (j == ((i + 1) % 3))
     {
-        return 6 + base;
+        return 7 + j;
     }
 
-    return base;
+    return j + 1;
 }
 
 int main()
@@ -50,11 +45,11 @@ int main()
     node *item = list;
     uint score1 = 0;
     uint score2 = 0;
-    char *str;
 
     do
     {
-        GET_NEXT(item, str);
+        char *str;
+        LIST_NEXT(item, str);
 
         score1 += part1(str[0], str[2]);
         score2 += part2(str[0], str[2]);

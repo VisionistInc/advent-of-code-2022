@@ -11,7 +11,7 @@ int main()
     do
     {
         char *str;
-        GET_NEXT(item, str);
+        LIST_NEXT(item, str);
 
         uint a, b, c, d;
 

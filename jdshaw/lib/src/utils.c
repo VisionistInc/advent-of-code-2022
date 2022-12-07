@@ -1,30 +1,100 @@
 #include "../inc/Utils.h"
 
-node *
-list_addToList(node *list, void *item)
+void printList(node *list)
 {
+    node *item = list;
+
+    do
+    {
+        printf("%p %p %p\n", item->data, item->prev, item->next);
+        item = item->next;
+    } while (item != list);
+}
+
+void list_addNodeToList(node **list, node *n, bool end)
+{
+    if (list == NULL || n == NULL)
+    {
+        ERROR("addNode: NULL list\n");
+    }
+
+    if (n == NULL)
+    {
+        ERROR("NULL node\n");
+    }
+
+    if (*list == NULL)
+    {
+
+        *list = n;
+        n->next = n;
+        n->prev = n;
+        return;
+    }
+
+    n->prev = (*list)->prev;
+    n->next = *list;
+    (*list)->prev->next = n;
+    (*list)->prev = n;
+
+    if (!end)
+    {
+        *list = n;
+    }
+}
+
+void list_addItemToList(node **list, void *item, bool end)
+{
+    if (list == NULL)
+    {
+        ERROR("addItem: NULL list\n");
+    }
+
     node *n = malloc(sizeof(node));
     if (n == NULL)
     {
-        printf("Error allocating list\n");
-        return NULL;
+        ERROR("list malloc\n");
     }
 
     n->data = item;
 
+    list_addNodeToList(list, n, end);
+}
+
+node *
+list_removeNodeFromList(node **list, bool end)
+{
     if (list == NULL)
     {
-        n->next = n;
-        n->prev = n;
+        ERROR("remove: NULL list\n");
+    }
+
+    if (*list == NULL)
+    {
+        return NULL;
+    }
+
+    node *n = *list;
+
+    if (n == n->next)
+    {
+        *list = NULL;
         return n;
     }
 
-    n->prev = list->prev;
-    list->prev = n;
-    n->prev->next = n;
-    n->next = list;
+    if (end)
+    {
+        n = n->prev;
+    }
+    else
+    {
+        *list = n->next;
+    }
 
-    return list;
+    n->prev->next = n->next;
+    n->next->prev = n->prev;
+
+    return n;
 }
 
 void list_iterate(node *list, itrFunc f)
@@ -53,8 +123,7 @@ readInFile(char *name)
     f = fopen(name, "r");
     if (f == NULL)
     {
-        printf("Error opening file\n");
-        exit(-1);
+        ERROR("can't open file");
     }
 
     while (fgets(buf, 2048, f) != NULL)
@@ -62,14 +131,13 @@ readInFile(char *name)
         int n = strlen(buf);
         char *val = malloc(n + 1);
         memcpy(val, buf, n + 1);
-        list = list_addToList(list, val);
+        LIST_ADDITEM_END(&list, val);
         buf[0] = 0;
     }
 
     if (list == NULL)
     {
-        printf("Empty file\n");
-        exit(-1);
+        ERROR("empty file");
     }
 
     return list;

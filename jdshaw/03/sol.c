@@ -16,11 +16,11 @@ int main()
 
     node *item = list;
     uint total = 0;
-    char *str;
 
     do
     {
-        GET_NEXT(item, str);
+        char *str;
+        LIST_NEXT(item, str);
 
         int n = strlen(str) - 1;
         int i;
@@ -39,36 +39,22 @@ int main()
 
     total = 0;
 
-    char *elf1 = NULL;
-    char *elf2 = NULL;
-
     do
     {
-        GET_NEXT(item, str);
+        char *elf1, *elf2, *elf3;
+        LIST_NEXT(item, elf1);
+        LIST_NEXT(item, elf2);
+        LIST_NEXT(item, elf3);
 
-        if (elf1 == NULL)
+        while (*elf3 != '\n')
         {
-            elf1 = str;
-            continue;
-        }
-
-        if (elf2 == NULL)
-        {
-            elf2 = str;
-            continue;
-        }
-
-        while (*str != '\n')
-        {
-            if (strchr(elf1, *str) && strchr(elf2, *str))
+            if (strchr(elf1, *elf3) && strchr(elf2, *elf3))
             {
-                total += priority(*str);
+                total += priority(*elf3);
                 break;
             }
-            str++;
+            elf3++;
         }
-        elf1 = NULL;
-        elf2 = NULL;
     } while (item != list);
 
     printf("Part 2: %d\n", total);

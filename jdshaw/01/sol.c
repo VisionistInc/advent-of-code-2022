@@ -2,25 +2,27 @@
 
 void insert(uint val, uint *list)
 {
-    if (val > list[2])
+    if (val < list[0])
     {
-        list[0] = list[1];
-        list[1] = list[2];
-        list[2] = val;
         return;
     }
 
-    if (val > list[1])
+    if (val < list[1])
     {
-        list[0] = list[1];
+        list[0] = val;
+        return;
+    }
+
+    list[0] = list[1];
+
+    if (val < list[2])
+    {
         list[1] = val;
         return;
     }
 
-    if (val > list[0])
-    {
-        list[0] = val;
-    }
+    list[1] = list[2];
+    list[2] = val;
 }
 
 int main()
@@ -29,11 +31,11 @@ int main()
     node *item = list;
     uint max[3] = {0};
     uint count = 0;
-    char *str;
 
     do
     {
-        GET_NEXT(item, str);
+        char *str;
+        LIST_NEXT(item, str);
         uint i = LONG(str);
 
         count += i;
