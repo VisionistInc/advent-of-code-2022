@@ -116,7 +116,7 @@ void list_iterate(node *list, itrFunc f)
 node *
 readInFile(char *name)
 {
-    char buf[2048];
+    char buf[8192];
     node *list = NULL;
     FILE *f;
 
@@ -126,7 +126,7 @@ readInFile(char *name)
         ERROR("can't open file");
     }
 
-    while (fgets(buf, 2048, f) != NULL)
+    while (fgets(buf, 8192, f) != NULL)
     {
         int n = strlen(buf);
         char *val = malloc(n + 1);
