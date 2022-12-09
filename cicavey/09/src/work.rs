@@ -62,16 +62,36 @@ impl Grid {
     }
 }
 
-pub fn run(input: &str, log: fn(String)) -> Result<(), AoC> {
-    // log(format!("{:?}", s));
+fn follow(head: Point2D<i32, AoC>, tail: Point2D<i32, AoC>) -> Point2D<i32, AoC> {
+    let dist = head - tail;
+    let dist_abs = dist.abs();
 
+    let mut new_tail = tail.clone();
+
+    // Tail is adjacent or on top of, no problem
+    if dist_abs.x <= 1 && dist_abs.y <= 1 {
+        return new_tail;
+    } else {
+        if tail.x == head.x {
+            // tail must move in the y direction toward head
+            new_tail.y += dist.y.signum();
+        } else if tail.y == head.y {
+            // tail must move in the x direction toward head
+            new_tail.x += dist.x.signum();
+        } else {
+            // diagonal move
+            new_tail.y += dist.y.signum();
+            new_tail.x += dist.x.signum();
+        }
+    }
+
+    new_tail
+}
+
+fn simulate(input: &str, knots: usize) -> usize {
+    let mut rope: Vec<Point2D<i32, AoC>> = vec![point2(0, 0); knots];
     let mut grid: Grid = Grid::new();
-    let mut head: Point2D<i32, AoC> = point2(0, 0);
-    let mut tail: Point2D<i32, AoC> = point2(0, 0);
-
-    // let mut rope: Vec<Point2D<i32, AoC>> = vec![point2(0, 0); 10];
-
-    grid.data.insert(tail, GridState::Occupied);
+    grid.data.insert(*rope.last().unwrap(), GridState::Occupied);
 
     for line in input.lines() {
         let ins: Vec<&str> = line.split_whitespace().collect();
@@ -88,35 +108,24 @@ pub fn run(input: &str, log: fn(String)) -> Result<(), AoC> {
         };
 
         for _ in 0..q {
-            head += step_vec;
+            // move the head
+            rope[0] += step_vec;
 
-            // tail update logic, executed per step
-            let dist = (head - tail);
-            let dist_abs = dist.abs();
-
-            // Tail is adjacent or on top of, no problem
-            if dist_abs.x <= 1 && dist_abs.y <= 1 {
-                continue;
-            } else {
-                if tail.x == head.x {
-                    // tail must move in the y direction toward head
-                    tail.y += dist.y.signum();
-                } else if tail.y == head.y {
-                    // tail must move in the x direction toward head
-                    tail.x += dist.x.signum();
-                } else {
-                    // diagonal move
-                    tail.y += dist.y.signum();
-                    tail.x += dist.x.signum();
-                }
-
-                grid.data.insert(tail, GridState::Occupied);
+            // update each knot in sequence with the one before it
+            for i in 0..rope.len() - 1 {
+                rope[i + 1] = follow(rope[i], rope[i + 1]);
             }
+
+            // Only track tail pos
+            grid.data.insert(*rope.last().unwrap(), GridState::Occupied);
         }
-        // log(format!("head={:?}, tail={:?}", head, tail));
     }
 
-    log(format!("visited={:?}", grid.occupied()));
+    grid.occupied()
+}
 
+pub fn run(input: &str, log: fn(String)) -> Result<(), AoC> {
+    log(format!("knots=2, visited={:?}", simulate(input, 2)));
+    log(format!("knots=10, visited={:?}", simulate(input, 10)));
     Ok(())
 }
