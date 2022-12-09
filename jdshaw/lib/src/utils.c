@@ -1,5 +1,7 @@
 #include "../inc/Utils.h"
 
+#define BUF_SZ 8192
+
 void printList(node *list)
 {
     node *item = list;
@@ -116,7 +118,7 @@ void list_iterate(node *list, itrFunc f)
 node *
 readInFile(char *name)
 {
-    char buf[8192];
+    char buf[BUF_SZ];
     node *list = NULL;
     FILE *f;
 
@@ -126,13 +128,32 @@ readInFile(char *name)
         ERROR("can't open file");
     }
 
-    while (fgets(buf, 8192, f) != NULL)
+    while (true)
     {
-        int n = strlen(buf);
-        char *val = malloc(n + 1);
-        memcpy(val, buf, n + 1);
+        int i = 0;
+        char c = getc(f);
+        if (c == EOF)
+        {
+            break;
+        }
+
+        while ((c != '\n') && (c != EOF))
+        {
+            buf[i] = c;
+            i++;
+            if (i == (BUF_SZ - 2))
+            {
+                ERROR("reached buf max size\n");
+            }
+            c = getc(f);
+        }
+
+        buf[i] = '\n';
+        buf[i + 1] = 0;
+
+        char *val = malloc(i + 2);
+        memcpy(val, buf, i + 2);
         LIST_ADDITEM_END(&list, val);
-        buf[0] = 0;
     }
 
     if (list == NULL)
