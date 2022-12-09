@@ -43,16 +43,9 @@ Entry *newEntry(char *name, uint size, Entry *parent)
 
     if (parent != NULL)
     {
-        Entry **new;
-        new = malloc(sizeof(Entry *) * (parent->numChildren + 1));
-        for (int i = 0; i < parent->numChildren; i++)
-        {
-            new[i] = parent->children[i];
-        }
         parent->numChildren += 1;
-        new[parent->numChildren - 1] = e;
-        free(parent->children);
-        parent->children = new;
+        parent->children = realloc(parent->children, sizeof(Entry *) * parent->numChildren);
+        parent->children[parent->numChildren - 1] = e;
     }
 
     return e;

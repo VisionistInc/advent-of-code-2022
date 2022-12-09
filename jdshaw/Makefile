@@ -1,6 +1,6 @@
 .SILENT: all clean
 
-TGT = 01 02 03 04 05 06 07
+TGT = 01 02 03 04 05 06 07 08
 
 all:
 	@for i in $(TGT); do \
