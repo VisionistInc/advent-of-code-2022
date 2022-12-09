@@ -1,0 +1,21 @@
+[package]
+name = "aoc"
+version = "0.1.0"
+authors = ["Chris Cavey <cicavey@visionistinc.com>"]
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib", "lib"]
+
+[dependencies]
+euclid = "0.22.7"
+console_error_panic_hook = { version = "0.1.7", optional = true }
+strum = "0.24.1"
+strum_macros = "0.24.3"
+wasm-bindgen = "0.2.83"
+web-sys = { version = "0.3.60", features = ['console', 'Document',
+  'Element',
+  'HtmlElement',
+  'Node',
+  'Window',] }
+wee_alloc = { version = "0.4.5", optional = true }
