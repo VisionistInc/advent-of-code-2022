@@ -1,6 +1,6 @@
 .SILENT: all clean
 
-TGT = 01 02 03 04 05 06 07 08 09
+TGT = `ls -IMakefile -Ilib`
 
 all:
 	@for i in $(TGT); do \
