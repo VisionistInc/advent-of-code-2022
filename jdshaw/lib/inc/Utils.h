@@ -13,6 +13,7 @@
 typedef unsigned int uint;
 typedef unsigned char byte;
 typedef unsigned short ushort;
+typedef unsigned long long ullong;
 
 #define LONG(a) strtol(a, NULL, 10)
 
